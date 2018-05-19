@@ -1,6 +1,6 @@
 var syntax        = 'scss'; // Syntax: sass or scss;
 
-var gulp          = require('gulp'),
+	var gulp          = require('gulp'),
 		gutil         = require('gulp-util' ),
 		sass          = require('gulp-sass'),
 		browserSync   = require('browser-sync'),
@@ -10,6 +10,8 @@ var gulp          = require('gulp'),
 		rename        = require('gulp-rename'),
 		autoprefixer  = require('gulp-autoprefixer'),
 		notify        = require("gulp-notify"),
+		imagemin 	  = require('gulp-imagemin'),
+		pngquant      = require('imagemin-pngquant'),
 		rsync         = require('gulp-rsync');
 
 gulp.task('browser-sync', function() {
@@ -43,6 +45,17 @@ gulp.task('js', function() {
 	// .pipe(uglify()) // Mifify js (opt.)
 	.pipe(gulp.dest('app/js'))
 	.pipe(browserSync.reload({ stream: true }))
+});
+
+gulp.task('img', function(){
+    return gulp.src('app/img/**/*')
+        .pipe(imagemin({
+            interlaced: true,
+            progressive: true,
+            svgPlugins: [{removeViewBox: false}],
+            use: [pngquant()]
+        }))
+        .pipe(gulp.dest('app/img'));
 });
 
 gulp.task('rsync', function() {
